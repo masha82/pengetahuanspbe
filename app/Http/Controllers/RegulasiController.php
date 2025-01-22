@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Regulasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class RegulasiController extends Controller
 {
@@ -14,7 +15,8 @@ class RegulasiController extends Controller
      */
     public function index()
     {
-        return view('regulasi');
+        return view('regulasi.index', [
+            'regulasi'=>Regulasi::all()]);
     }
 
     /**
@@ -24,18 +26,32 @@ class RegulasiController extends Controller
      */
     public function create()
     {
-        //
+        return view('regulasi.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+     public function store(Request $request) {
+        $request->validate(
+            [
+            'jenis_regulasi'=>'required',
+            'nama_regulasi'=>'required',
+            'tahun'=>'required',
+            'dokumen'=>'mimes:pdf|max:10240',
+        ]);
+
+        $data =[
+            'jenis_regulasi'=>$request->jenis_regulasi,
+            'nama_regulasi'=>$request->nama_regulasi,
+            'tahun'=>$request->tahun,
+        ];
+        if ($request->hasFile('dokumen')){
+            $dokumen_file  = $request->file('dokumen');
+            $dokumen_nama  = $dokumen_file->hashName();
+            $dokumen_file->move(public_path('dokumen'), $dokumen_nama);
+            $data['dokumen'] = $dokumen_nama;
+        }
+        Regulasi::create($data);
+        
+        return redirect('regulasi')->with('message', 'Tambah Data berhasil..');
     }
 
     /**
@@ -57,19 +73,40 @@ class RegulasiController extends Controller
      */
     public function edit($id)
     {
-        //
+        $regulasi = Regulasi::findOrFail($id);
+        return view('regulasi.edit', compact('regulasi'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate(
+            [
+            'jenis_regulasi'=>'required',
+            'nama_regulasi'=>'required',
+            'tahun'=>'required',
+            'dokumen'=>'mimes:pdf|max:10240',
+        ]);
+
+        $dataEdit =[
+            'jenis_regulasi'=>$request->jenis_regulasi,
+            'nama_regulasi'=>$request->nama_regulasi,
+            'tahun'=>$request->tahun,
+        ];
+
+        if ($request->hasFile('dokumen')){
+            $dokumen_file  = $request->file('dokumen');
+            $dokumen_nama  = $dokumen_file->hashName();
+            $dokumen_file->move(public_path('dokumen'), $dokumen_nama);
+            
+            $regulasi = Regulasi::where('id', $id)->first();
+            File::delete(public_path('dokumen').'/'. $regulasi->dokumen);
+
+            $dataEdit['dokumen'] = $dokumen_nama;
+        }
+        
+        Regulasi::where('id', $id)->update($dataEdit);
+        
+        return redirect('regulasi')->with('message', 'Edit Data berhasil..');
     }
 
     /**
@@ -80,6 +117,6 @@ class RegulasiController extends Controller
      */
     public function destroy($id)
     {
-        //
+       
     }
 }

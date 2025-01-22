@@ -13,5 +13,5 @@ class Regulasi extends Model
      *
      * @var array
      */
-    protected $fillable = ['nama_regulasi', 'jenis_regulasi', 'tahun', 'dokumen'];
+    protected $fillable = ['jenis_regulasi', 'nama_regulasi', 'tahun', 'dokumen'];
 }
