@@ -14,7 +14,10 @@ class TataKelolaController extends Controller
      */
     public function index()
     {
-        //
+
+        return view('spbe.index', [
+            'spbe'=>TataKelola::all()]);
+
     }
 
     /**
@@ -24,8 +27,10 @@ class TataKelolaController extends Controller
      */
     public function create()
     {
-        //
+
+        return view('spbe.create');
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +40,23 @@ class TataKelolaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate(
+            [
+            'domain'=>'required',
+            'aspek'=>'required',
+            'no_indikator'=>'required|numeric',
+            'nama_indikator'=>'required',
+            'deskripsi'=>'required'
+        ]);
+        TataKelola::create([
+            'domain'=>$request->domain,
+            'aspek'=>$request->aspek,
+            'no_indikator'=>$request->no_indikator,
+            'nama_indikator'=>$request->nama_indikator,
+            'deskripsi'=>$request->deskripsi
+        ]);
+        return redirect('spbe')->with('message', 'Tambah Data berhasil..');
+
     }
 
     /**
@@ -44,9 +65,12 @@ class TataKelolaController extends Controller
      * @param  \App\Models\TataKelola  $tataKelola
      * @return \Illuminate\Http\Response
      */
-    public function show(TataKelola $tataKelola)
+
+    public function show($id)
     {
-        //
+        $spbe = TataKelola::findOrFail($id);
+        return view('spbe.show', compact('spbe'));
+
     }
 
     /**
@@ -55,21 +79,34 @@ class TataKelolaController extends Controller
      * @param  \App\Models\TataKelola  $tataKelola
      * @return \Illuminate\Http\Response
      */
-    public function edit(TataKelola $tataKelola)
+
+    public function edit($id)
     {
-        //
+        $spbe = TataKelola::findOrFail($id);
+        return view('spbe.edit', compact('spbe'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\TataKelola  $tataKelola
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, TataKelola $tataKelola)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate(
+            [
+            'domain'=>'required',
+            'aspek'=>'required',
+            'no_indikator'=>'required|numeric',
+            'nama_indikator'=>'required',
+            'deskripsi'=>'required'
+        ]);
+
+        $dataEdit =([
+            'domain'=>$request->domain,
+            'aspek'=>$request->aspek,
+            'no_indikator'=>$request->no_indikator,
+            'nama_indikator'=>$request->nama_indikator,
+            'deskripsi'=>$request->deskripsi
+        ]);
+        TataKelola::where('id', $id)->update($dataEdit);
+        return redirect('spbe')->with('message', 'Edit Data berhasil..');
+
     }
 
     /**

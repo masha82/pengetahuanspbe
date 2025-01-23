@@ -22,40 +22,33 @@
   
 
   <div class="d-lg-flex half">
-    <div class="bg order-1 order-md-2" style="background-image: url('{{ asset('assets-login/images/bg_11.jpg') }} "></div>
+    <div class="bg order-1 order-md-2" style="background-image: url('{{ asset('assets-login/images/alun.jpg') }} "></div>
     <div class="contents order-2 order-md-1">
 
       <div class="container">
         <div class="row align-items-center justify-content-center">
           <div class="col-md-7">
-            <h3>Login to <br> <strong>Manajemen Pengetahuan</strong></h3><br>
+            <h3><strong>Login to</strong><br> <strong>Manajemen Pengetahuan</strong></h3><br>
             {{-- <p class="mb-4">Lorem ipsum dolor sit amet elit. Sapiente sit aut eos consectetur adipisicing.</p> --}}
-            <form method="POST" action="{{ route('login') }}" class="login100-form validate-form">
-                @csrf
-              <div class="form-group first">
-                <label for="username">Email</label>
-                <input placeholder="Masukkan alamat email" id="email" type="email"
-                       class="input100 @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"
-                       required autocomplete="email" autofocus>
-                <span class="focus-input100" data-symbol="&#xf206;"></span>
-                @error('email')
-                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                @enderror
+            <form method="POST" action="{{ route('login.action') }}" class="user">
+            @csrf
+            @if ($errors->any())
+              <div class="alert alert-danger">
+                <ul>
+                   @foreach ($errors->all() as $error)
+                      <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
               </div>
-              <div class="form-group last mb-3">
-                <label for="password">Password</label>
-                <input id="password" type="password" class="input100 @error('password') is-invalid @enderror"
-                       name="password" required autocomplete="current-password" placeholder="Masukkan password">
-                <span class="focus-input100" data-symbol="&#xf190;"></span>
-                @error('password')
-                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                @enderror
+              @endif
+              <div class="form-group">
+                <label>Email</label>
+                <input name="email" type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Email Address...">
               </div>
-              
+              <div class="form-group">
+                <label>Email</label>
+                <input name="password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
+              </div>
               
               {{-- <div class="d-flex mb-5 align-items-center">
                 <label class="control control--checkbox mb-0"><span class="caption">Remember me</span>

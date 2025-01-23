@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\RegulasiController;
+use App\Http\Controllers\TataKelolaController;
+use App\Models\TataKelola;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -32,3 +37,49 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::controller(LoginController::class)->group(function () {
+    Route::get('login', 'login')->name('login');
+    Route::post('login', 'loginAction')->name('login.action');
+    Route::get('logout', 'logout')->middleware('auth')->name('logout');
+
+});
+Route::get('/dashboard',function () {
+    return view('dashboard');
+    })->name('dashboard');
+
+Route::controller('LoginController'::class)->group(function () {
+    Route::get('edit/{id_users}', 'edit')->name('akun.edit');
+    Route::put('update/{id_users}', 'update')->name('akun.update');
+});
+
+Route::controller(RegulasiController::class)->prefix('regulasi')->group(function(){
+    Route::get('', 'index')->name('regulasi');
+    Route::get('create', 'create')->name('regulasi.create');
+    Route::post('create', 'store')->name('regulasi.create.store');
+    Route::get('edit/{id}', 'edit')->name('regulasi.edit');
+    Route::put('update/{id}', 'update')->name('regulasi.update');
+});
+
+Route::controller(TataKelolaController::class)->prefix('spbe')->group(function(){
+    Route::get('', 'index')->name('spbe');
+    Route::get('create', 'create')->name('spbe.create');
+    Route::post('create', 'store')->name('spbe.create.store');
+    Route::get('edit/{id}', 'edit')->name('spbe.edit');
+    Route::put('update/{id}', 'update')->name('spbe.update');
+    Route::get('show/{id}', 'show')->name('spbe.show');
+});
+
+Route::controller(BeritaController::class)->prefix('berita')->group(function(){
+    Route::get('', 'index')->name('berita');
+    Route::get('create', 'create')->name('berita.create');
+    Route::post('create', 'store')->name('berita.create.store');
+    Route::get('edit/{id}', 'edit')->name('berita.edit');
+    Route::put('update/{id}', 'update')->name('berita.update');
+    Route::get('show/{id}', 'show')->name('berita.show');
+});
+
+
+Route::get('/profile',function () {
+    return view('profil');
+    })->name('profile');
